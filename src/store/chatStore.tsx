@@ -28,7 +28,6 @@ const pushHideContent = getPushHideContent(pushHidekey) || getUrlParams('pushhid
 const pushenableR1 = getUrlParams('r1') || '';
 const pushenableOnline = getUrlParams('online') || '';
 const scene = getUrlParams('scene') || '';
-const isBottomBar = getUrlParams('tabSource'); // 有tabsource则认为是底部tab
 const promptFromUrl = getUrlParams('prompt') || '';
 let fromPush = location.href.indexOf('push') !== -1 || promptFromUrl // fromPush的含义变为自动发一条消息。 这个可以修改为false 。 修改为false标识已经发过。
 const isFromPush = () => location.href.indexOf('push') !== -1 || promptFromUrl; // 这个不会变
@@ -127,14 +126,7 @@ export const useChatStore = defineStore('chat', () => {
 
     //TODO: 有tabSouce的时候，source固定为tabSource的值
     
-    originTracker(name, {
-      oid: uuid,
-      mode: mode + '',
-      version: version,
-      source: isBottomBar ? (tabSource.value || isBottomBar): (isFromPush() ? ( source || 'publicpush') : 'clkchatbot'),
-      ...params,
-      ...pushContent,
-    })
+   
   }
 
   const setPrompt = (userInput, promptInput) => {
@@ -210,7 +202,6 @@ export const useChatStore = defineStore('chat', () => {
       return newSessionResult?.session?.id;
     } catch (e) {
       showToast('网络异常，请稍后再试。');
-      tracker('ai_chatbot_h5_resp_error', { errorCode: 10002, errorMsg: '获取newsession失败' });
       messages.value.pop();
       console.error(e);
       return null;
@@ -245,7 +236,7 @@ export const useChatStore = defineStore('chat', () => {
       } else {
         showToast('发送消息失败');
       }
-      tracker('ai_chatbot_h5_resp_error', { errorCode: code, errorMsg: message });
+    
       if (sessionId.value === request.sessionId) {
         removeLastMessage();
         userInput.value = request.content;
@@ -310,13 +301,6 @@ export const useChatStore = defineStore('chat', () => {
       return;
     }
     isTyping.value = true;
-    tracker('ai_chatbot_h5_msg_btn_clk', {
-      index: messages.value.length,
-      userIndex: messages.value.filter((msg) => msg.role === 'user').length + 1,
-      action: 'input',
-      sessionId: sessionId.value,
-      content: ignoreContent ? '' : textInput,
-    });
 
     messages.value.push({ role: 'user', text: textInput });
     canLoginSkipFirstMsg = false;
@@ -404,9 +388,7 @@ export const useChatStore = defineStore('chat', () => {
     
     const fetchMessage = async (msgId: number, sid: string) => {
       if (firstResponse) {
-        !continueFlag && tracker('ai_chatbot_h5_resp_begin', {
-          sessionId: sid
-        });
+     
         firstResponse = false;
       }
   
@@ -465,9 +447,7 @@ export const useChatStore = defineStore('chat', () => {
       if (end) {
         clearTimeout(textTimout!);
         textTimout = null;
-        tracker('ai_chatbot_h5_resp_finish', {
-          sessionId: sid
-        });
+   
         isTyping.value = false;
         return;
       }
@@ -476,12 +456,7 @@ export const useChatStore = defineStore('chat', () => {
     };
   
     const handleFetchError = (error) => {
-      tracker('ai_chatbot_h5_resp_error', {
-        sessionId: sid,
-        errorCode: error?.code || error?.response?.status || -1,
-        errorMsg: error?.message || error?.response?.status || error?.stack?.split('\n')?.slice(0, 3)?.join('\n') || error || '服务器繁忙，请稍后再试吧（2）',
-      });
-  
+ 
       stopGenerater(true);
   
       messages.value.push({
@@ -497,7 +472,7 @@ export const useChatStore = defineStore('chat', () => {
     const updateMessage = ({id, sender, msgIndex, content, reasoning, end, online, code, adTasks}) => {
       if (+code === -112) {
         // 风控拦截
-        tracker('ai_chatbot_h5_resp_error', { errorCode: code, errorMsg: '服务器繁忙，请稍后再试吧（1）' });
+    
         messages.value[msgIndex] = { ...messages.value[msgIndex], 
           typingIndex: undefined,
           displayedText: '这个问题不是很适合回答，试试换一个问题吧。', text:  '这个问题不是很适合回答，试试换一个问题吧。', 
@@ -506,7 +481,7 @@ export const useChatStore = defineStore('chat', () => {
           online: false,
           onlineList: [],};
       } else if (+code !== 0) {
-        tracker('ai_chatbot_h5_resp_error', { errorCode: code, errorMsg: '服务器繁忙，请稍后再试吧（1）' });
+       
         messages.value[msgIndex] = { ...messages.value[msgIndex], displayedText: '', text: content || '服务器繁忙，请稍后再试吧。', reasoning, end, online };
       } else  {
         const { text, recommendList } = parseContent(content);
@@ -517,9 +492,7 @@ export const useChatStore = defineStore('chat', () => {
         const onComplete = () => {
           messages.value[msgIndex].end = end;
           if(end){
-            tracker('ai_chatbot_h5_textprint_finish',{
-              sessionId: sid
-            }) // 文字播放结束
+         
             setTimeout(() => {
               messages.value[msgIndex].recommendList = recommendList;
               throttleScrollToBottom();
@@ -585,10 +558,7 @@ export const useChatStore = defineStore('chat', () => {
     let userBreak = !shutdown;
     const request = { msgId: isTypingMsgId.value, shutdown: shutdown, break: userBreak };
     stopLoading.value = true;
-    tracker('ai_chatbot_h5_stop_btn_clk', {
-      sessionId: sessionId.value,
-      // msgId: isTypingMsgId.value,
-    })
+   
     getAIDeepSeekRefreshMessage(request)
       .then((res) => {
         stopLoading.value = false;
@@ -667,7 +637,7 @@ export const useChatStore = defineStore('chat', () => {
   const openNewSession = () => {
     // TODO: LOGIN?
     userInput.value = '';
-    tracker('ai_chatbot_h5_dialog_btn_clk');
+  
     clearTimeout(fetchTimeout);
     clearTimeout(textTimout);
     textTimout = null;
@@ -683,23 +653,6 @@ export const useChatStore = defineStore('chat', () => {
 
   const sendRecommendMessageWithoutLogin = async (question: string) => {
     const qId = recommendList.find(item => item.question === question)?.id || null;
-  
-    if(qId) {
-      tracker('ai_chatbot_h5_suggest_clk', {
-        questionId: qId + '',
-        index: messages.value.length,
-        // realIndex: messages.value.filter((msg) => msg.role === 'user').
-        //   length + 1,
-      });
-    } else {
-      tracker('ai_chatbot_h5_msg_btn_clk', {
-        index: messages.value.length,
-        action: 'suggest',
-        content: question,
-        sessionId: sessionId.value,
-        userIndex: messages.value.filter((msg) => msg.role === 'user').length + 1,
-      });
-    }
   
     if (isTyping.value) {
       showToast('回答输出中，请稍后操作或点击停止回答');

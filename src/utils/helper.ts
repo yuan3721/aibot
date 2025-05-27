@@ -292,12 +292,7 @@ export const parseAdsText = ({text, adTasks, sessionId, msgId}) => {
       cachedAdsMap[id] = '';
       const requestId = generateRandomId();
       const adsExtContent = getAdsExtContent({ keyword, requestId });
-      tracker('ai_chatbot_deepseek_ad_req', {
-        ...adsExtContent,
-        sessionId: sessionId,
-        msgId: msgId,
-        version: version
-      })
+  
       const slotId = getSlotId();
       !cachedAdsMap[id] && MyComponent.getAderData({ 
         keyword, 
@@ -311,13 +306,7 @@ export const parseAdsText = ({text, adTasks, sessionId, msgId}) => {
         console.log('aderData=====>success', success,aderData)
         const adsExtContent = getAdsExtContent({aderData,  keyword, requestId })
         if(success && !cachedAdsMap[id]) {
-          tracker('ai_chatbot_deepseek_ad_req_result', {
-            ...adsExtContent,
-            result: success ? 1 : 2,
-            sessionId,
-            msgId,
-            version: version
-          })
+       
           cachedAdsMap[id] = encodeForHtmlAttr(aderData)
           waitForElement(id).then(() => {
             const el = document.getElementById(id);
@@ -325,12 +314,7 @@ export const parseAdsText = ({text, adTasks, sessionId, msgId}) => {
               if (!showTriggerMap[id]) {
                 showTriggerMap[id] = true
                 apperLog(aderData)
-                tracker('ai_chatbot_deepseek_ad_show_trigger', {
-                  ...adsExtContent,
-                  sessionId,
-                  msgId,
-                  version: version
-                })
+              
               }
               console.log('元素已找到，准备设置广告样式');
               el.classList.add('ads-loaded');

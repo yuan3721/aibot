@@ -1,7 +1,7 @@
 <template>
   <!-- 输入框 -->
   
-  <van-cell-group class="input-container" :style="styleBottomHeight">
+  <van-cell-group class="input-container">
     <slot></slot>
     <div class="input-wrapper">
 <van-field ref="userInputRef"  id="usercontent"  v-model="userInput"  class="user-input" rows="1" autosize  enterkeyhint="return" type="textarea"   
@@ -72,26 +72,7 @@ const placeholder = computed(() => {
   }
 })
 
-const styleBottomHeight = computed(() => {
-  let padding = '';
-  if (props.isBottomBar) {
-    if(props.showAds && adsPadding.value){
-      padding = `90px`
-    } else if(props.showAds && !adsPadding.value){
-      padding = `${keyboardHeight.value - 20 }px`
-    } else if(!adsPadding.value){
-      padding = `${keyboardHeight.value - 20 }px`
-    }
-  } else {
-    if(props.showAds && adsPadding.value) {
-      padding = '90px'
-    } else {
-      padding = ''
-    }
-  }
 
-  return { paddingBottom: padding }
-})
 
 const send = () => {
   console.log('send', userInput)

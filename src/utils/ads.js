@@ -43,11 +43,7 @@ export const executeAds = async ({
         console.error('广告请求数据解析失败', e);
         res = {}
       }
-      tracker('ai_chatbot_deepseek_ad_req_result', {
-        code: res?.code,
-        originalRequestId: uid,
-        version: version
-      })
+    
       if (+res?.code === 1) {
         console.log('广告请求成功', data);
         onRequestSuccess && onRequestSuccess(data);
@@ -64,10 +60,7 @@ export const executeAds = async ({
             })
           }
         });
-        tracker('ai_chatbot_deepseek_ad_show_trigger', {
-          code: res?.code,
-          originalRequestId: uid
-        })
+   
       }
 
       if (+res?.code === 2) {

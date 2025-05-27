@@ -74,13 +74,6 @@ const getNewItems = () => {
     }
     displayedItems.value = getNextItems()
   }
-
-  displayedItems.value.map(item => {
-    // const qId = recommendList.indexOf(item)
-    tracker('ai_chatbot_h5_suggest_show', {
-      questionId: item.id + ''
-    })
-  })
 };
 
 onMounted(() => {

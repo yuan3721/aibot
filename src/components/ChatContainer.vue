@@ -97,11 +97,7 @@ const adsExtension = () => {
               aderData: parsedData,
               keyword: content
             })
-            tracker('ai_chatbot_deepseek_ad_show_trigger', {
-              cache: true,
-              keyword: content,
-              ...adsExtContent,
-            })
+
           }
           return `<span id=${id} class="ads-content ads-loaded" data-ads=${cacheData} >${content}</span>`
         }
@@ -171,12 +167,7 @@ onMounted(() => {
       if (!messageContent) return;
       const dataMsgId = messageContent.getAttribute("data-msg");
       // console.log('tracker=====>extContent', extContent)
-      tracker('ai_chatbot_deepseek_ad_click', {
-        ...extContent,
-        sessionId: sessionId.value,
-        msgId: dataMsgId,
-        keyword
-        });
+ 
       // console.log('adsData=====>parsedData', parsedData)
     } catch (e) {
       console.error('adsData=====>', adsData)

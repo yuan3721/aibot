@@ -2,28 +2,26 @@
   <div class="chat-container">
     <!-- 导航栏 -->
     <van-nav-bar :title="chatTitle" :style="{marginTop: top + 'px'}">
-      <template #left v-if="isBottomBar">
-        <SvgIcon name="menu" color="#000000" width="32px" height="32px" @click="showPopup" />
-      </template>
-      <template #left v-else>
-        <SvgIcon name="back" color="#000000" width="22px" height="22px" @click="closePage" />
+    
+      <template #left>
+        <SvgIcon name="back" color="#000000" width="22px" height="22px" />
       </template>
       <template #right>
         <SvgIcon style="margin-right: 10px" name="newDialog" color="#000000" width="32px" height="32px"
           @click="openNewSession" />
-        <SvgIcon v-if="!isBottomBar" name="menu2" color="#000000" width="32px" height="32px" @click="showPopup" />
+        <!-- <SvgIcon v-if="!isBottomBar" name="menu2" color="#000000" width="32px" height="32px" @click="showPopup" /> -->
       </template>
     </van-nav-bar>
     <!-- 聊天对话 -->
     <ChatContainer />
     <!-- 键盘输入 -->
-    <InputContainer :showAds="showAds" :isBottomBar="isBottomBar">
-      <div id="scroll-button" class="new-session__container">
+    <InputContainer :showAds="showAds" >
+      <!-- <div id="scroll-button" class="new-session__container">
         <img class="new-session" :src="BottomPng" alt="" @click="clickToBottom" />
-      </div>
+      </div> -->
     </InputContainer>
     <!-- 历史记录popup -->
-    <van-popup v-model:show="showRight"  :position="isBottomBar ? 'left':'right'" :style="historyPopStyle"
+    <van-popup v-model:show="showRight" :style="historyPopStyle"
       :overlay-style="{ background: 'rgba(0, 0, 0, 0.3)' }" @open="getHistory">
       <HistoryPop :chatGroups="chatGroups || {}" :hideRight="hideRight" :refresh="getHistory" />
     </van-popup>
@@ -76,7 +74,6 @@ const iframeUrl = ref('');
 const iframeShow = ref(false);
 const iframeTitle = ref('');
 const progressTimer = ref(null);
-const isBottomBar = location.href.indexOf('tabSource') > -1;
 
 const historyPopStyle = {
   width: '77%',
@@ -118,7 +115,7 @@ const chatTitle = computed(() => {
   return messages.value.filter((i) => i.role === 'user')[0]?.text || '新对话'
 })
 
-tracker('ai_chatbot_h5_created');
+
 
 const top = ref(0);
 
@@ -126,11 +123,7 @@ const top = ref(0);
 onMounted(async () => {
   console.log('页面加载完成,optimized');
 
-  !isBottomBar && tracker('ai_chatbot_h5_show');
-  
-  isBottomBar && window?.tutu?.feed?.getNearbyTopOffset().then((data) => {
-    top.value = data?.data?.statusBarHeight  || 0;
-  })
+
 
   if(isIOS()) {
     window?.tutu?.common?.setStatusBarState( {
