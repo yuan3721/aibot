@@ -1,0 +1,60 @@
+{
+  "compilerOptions": {
+
+    // 虽然vite.config中默认有src目录的路径别名配置，但是实际开发过程中依然会有ts报错——”找不到模块或声明“，这时需要在tsconfig.json中新增 "paths": { "@/*": ["src/*"] } 配置，但是会提示错误：‘未设置 "baseUrl" 时，不允许使用非相对路径。是否忘记了前导 "./"?’，因而再增加 "baseUrl": "." 配置。
+    "baseUrl": ".",
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    /* Bundler mode */
+    "moduleResolution": "node",
+    // "allowImportingTsExtensions": true, // 从 TypeScript 3.8 开始，这个选项已经被废弃了
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    // Don't emit; allow Babel to transform files.
+    "noEmit": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "allowJs": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      // "@/assets/*": ["./src/assets/*"],
+    },
+    "types": [
+      "node"
+    ],
+    /* Linting */
+    // "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "typeRoots": [
+      "./node_modules/@types/",
+      "./types"
+    ]
+  },
+  "include": [
+    "vite.config.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "types/*.d.ts",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.js",
+    "public"
+  ],
+  "references": [
+    // {
+    //   "path": "./tsconfig.node.json"
+    // }
+  ]
+}

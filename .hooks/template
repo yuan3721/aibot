@@ -1,0 +1,44 @@
+#
+# 提交信息模板:
+#
+#   <类型>[(范围)]:<空格><主题,单行>
+#   <BLANK LINE>
+#   [描述,多行,可选]
+#   <BLANK LINE>
+#   [附录,多行,可选]
+#
+# 类型:
+#
+#   feat: 引入了新的特性或功能
+#   fix: 修复了某个bug
+#   revert: 回滚某个提交，主题中请明确commit hash
+#   improvement: 代码结构改进、性能优化，不涉及新功能或bug修复
+#   dep: 升级或添加相关依赖
+#   ci: 构建脚本或配置更新
+#   style: 代码风格更新
+#   test: 测试代码更新
+#   docs: 文档方面更新
+#
+# 范围：
+#
+#   作为可选项，位于类型之后，使用英文圆括号`()`标注，用于明确当前提交作用范围。
+#   明确的范围可以帮助代码审核者快速判断当前提交的影响范围并提高审核效率。
+#
+#   示例：`feat(note detail): 支持新版笔详的样式设计`
+#
+# 描述:
+#
+#   添加提交的详细描述，例如主要做了哪些层面的具体改动。如涉及重大修改，
+#   请在描述中利用'BREAKING CHANGE'标识，以便CI等工具进行相应处理。
+#
+#   示例: `BREAKING CHANGE: 修改了note中title字段类型（Object -> String）`
+#
+# 附录:
+#
+#   列举关联的 issue 或 MR 信息，便于记录和追踪完整上下文。
+#
+#   示例: `close #1, fixed #2, also check cube-image#3, related to !4。`
+#
+# 参考:
+#
+#   https://www.conventionalcommits.org/en/v1.0.0-beta.2/

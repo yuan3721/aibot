@@ -1,0 +1,10 @@
+node_modules
+dist
+.DS_Store
+*.local
+.eslintcache
+components.d.ts
+.tutuapi2ts
+.history
+pnpm
+/sourcemap
