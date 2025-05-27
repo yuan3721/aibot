@@ -64,6 +64,9 @@ const getLinkMapFromMsgId = (msgId, content, sessionId) => {
   }
 };
 
+/**
+ * TODO: 通过ai请求获取消息
+ */
 const decoratedGetAIDeepSeekSendMessage = decoratorFetch(getAIDeepSeekSendMessage);
 const decoratedGetAIDeepSeekRefreshMessage = decoratorFetch(getAIDeepSeekRefreshMessage, 5);
 const decoratedGetAIDeepSeekNewSession = decoratorFetch(getAIDeepSeekNewSession);

@@ -48,10 +48,6 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  isBottomBar: {
-    type: Boolean,
-    default: false
-  }
 })
 
 const userInputRef = ref(null); // 定义 ref
