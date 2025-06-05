@@ -20,7 +20,6 @@ export const parseParams = (query, params) => {
       const basedValue = isBase64(value) ? checkAndDecodeBase64(value) : value;
       const decodedKey = decodeURIComponent(key);
       const decodedValue = basedValue ? decodeURIComponent(basedValue) : ''; // 处理无值参数
-
       if (params[decodedKey] === undefined) {
           params[decodedKey] = decodedValue;
       } else if (Array.isArray(params[decodedKey])) {

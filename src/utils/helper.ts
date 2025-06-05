@@ -1,10 +1,8 @@
 import dayjs from "dayjs";
 import { getAIConfigGetFrontCommon } from '@/api/tutuApiWiFi/index.api';
 import { defaultConfig } from '@/utils/constants';
-import MyComponent from '@ads-platform/ad-h5-sdk';
-import { tracker } from "./tracker";
+// import MyComponent from '@ads-platform/ad-h5-sdk';
 import { getAppType } from './apptype';
-import { version } from '@/utils/version';
 
 export const getUrlEnv = () => {
   if (location.host === 'static.ttwifi.net') {
@@ -290,43 +288,6 @@ export const parseAdsText = ({text, adTasks, sessionId, msgId}) => {
         return
       }
       cachedAdsMap[id] = '';
-      const requestId = generateRandomId();
-      const adsExtContent = getAdsExtContent({ keyword, requestId });
-  
-      const slotId = getSlotId();
-      !cachedAdsMap[id] && MyComponent.getAderData({ 
-        keyword, 
-        request_id: requestId, 
-        slot_id: slotId,
-        env: getUrlEnv()
-      }).then(({
-        success,
-        aderData
-      }) => {
-        console.log('aderData=====>success', success,aderData)
-        const adsExtContent = getAdsExtContent({aderData,  keyword, requestId })
-        if(success && !cachedAdsMap[id]) {
-       
-          cachedAdsMap[id] = encodeForHtmlAttr(aderData)
-          waitForElement(id).then(() => {
-            const el = document.getElementById(id);
-            if (el && aderData) {
-              if (!showTriggerMap[id]) {
-                showTriggerMap[id] = true
-                apperLog(aderData)
-              
-              }
-              console.log('元素已找到，准备设置广告样式');
-              el.classList.add('ads-loaded');
-              console.log('aderData===>广告返回', aderData)
-              el.setAttribute('data-ads', encodeForHtmlAttr(aderData));
-            }
-        }).catch((e) => {
-          console.error(e)
-          console.log('元素未找到，可能是广告位被删除了');
-        });
-      }
-    })
     })
   })
   return newText 

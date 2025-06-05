@@ -1,19 +1,15 @@
 import { showToast } from "vant";
 export const doCopy = (text) => {
     if (navigator.clipboard && window.isSecureContext) {
-      // 现代浏览器使用 Clipboard API
       navigator.clipboard.writeText(text)
         .then(() => {
           showToast({
             message: '复制成功',
-            // icon: 'passed',
-            // duration: 0
           }
           );
         })
         .catch(() => fallbackCopyText(text));
     } else {
-      // 旧版浏览器使用 `execCommand`
       fallbackCopyText(text);
     }
   }
