@@ -40,14 +40,14 @@ export const groupMessages = (msg) => {
     const yesterdayStart = todayStart.subtract(1, 'day');
     const past7DaysStart = yesterdayStart.subtract(6, 'day');
     const past30DaysStart = past7DaysStart.subtract(23, 'day');
-  
+
     const grouped = {
       今天: [],
       昨天: [],
       过去7天: [],
       过去30天: []
     };
-  
+
     msg?.forEach(({ id, firstMsg, lastSendTick }) => {
       const messageTime = dayjs(lastSendTick);
       const title = firstMsg
@@ -67,11 +67,11 @@ export const groupMessages = (msg) => {
         grouped[monthKey].push({ id, title, lastSendTick });
       }
     });
-    
+
     for (const key of Object.keys(grouped)) {
       if (!grouped[key]?.length) delete grouped[key]
     }
-  
+
     return grouped;
   }
 
@@ -99,8 +99,8 @@ export function decoratorFetch(fn: Function, retries: number = 3, delay: number 
   }
 
   /**
-   * 
-   * @param content 
+   *
+   * @param content
    * @returns {
    *    text: '展示内容',
    *    recommendList: [],
@@ -128,7 +128,7 @@ export function decoratorFetch(fn: Function, retries: number = 3, delay: number 
     if (cachedConfig !== null) {
       return cachedConfig;
     }
-  
+
     try {
       // 如果没有缓存配置，则发送请求获取配置
       const res = await getAIConfigGetFrontCommon()
@@ -147,7 +147,7 @@ export function decoratorFetch(fn: Function, retries: number = 3, delay: number 
     leading?: boolean;  // 是否在开始时立即执行
     trailing?: boolean; // 是否在结束后额外执行一次
   };
-  
+
   export function throttle<T extends (...args: any[]) => void>(
     fn: T,
     wait: number,
@@ -157,22 +157,22 @@ export function decoratorFetch(fn: Function, retries: number = 3, delay: number 
     let timeout: ReturnType<typeof setTimeout> | null = null;
     let lastArgs: any[] | null = null; // 记录最后一次参数
     let lastThis: any = null; // 记录 this
-  
+
     const { leading = true, trailing = true } = options;
-  
+
     function invoke() {
       lastCallTime = Date.now();
       fn.apply(lastThis, lastArgs!);
       lastArgs = lastThis = null;
     }
-  
+
     function throttled(this: any, ...args: any[]) {
       const now = Date.now();
       const remainingTime = wait - (now - lastCallTime);
-  
+
       lastArgs = args;
       lastThis = this;
-  
+
       if (remainingTime <= 0) {
         if (timeout) {
           clearTimeout(timeout);
@@ -186,7 +186,7 @@ export function decoratorFetch(fn: Function, retries: number = 3, delay: number 
         }, remainingTime);
       }
     }
-  
+
     throttled.cancel = () => {
       if (timeout) {
         clearTimeout(timeout);
@@ -194,7 +194,7 @@ export function decoratorFetch(fn: Function, retries: number = 3, delay: number 
       }
       lastArgs = lastThis = null;
     };
-  
+
     return throttled;
   }
 
@@ -266,14 +266,14 @@ export const getAdsExtContent = ({ aderData, keyword, requestId }) => {
 }
 
 /**
- * 
- * @param text 
+ *
+ * @param text
  * @param adTasks  { uuid, origin: '', keywords: []}
- * @returns 
+ * @returns
  */
 export const parseAdsText = ({text, adTasks, sessionId, msgId}) => {
   let newText = text;
-  if(!adTasks || adTasks?.length === 0) { 
+  if(!adTasks || adTasks?.length === 0) {
     return newText;
   }
   // 这里文本渲染的时候让它能渲染成广告的形式
@@ -290,7 +290,7 @@ export const parseAdsText = ({text, adTasks, sessionId, msgId}) => {
       cachedAdsMap[id] = '';
     })
   })
-  return newText 
+  return newText
 };
 
 export const replaceKeywords = (origin, keywords, id) => {
@@ -349,8 +349,8 @@ export const encodeForHtmlAttr = (obj) => {
   }
 }
 
-export const jumpToAds = MyComponent.handleAdClickandReport
-export const apperLog = MyComponent.onAppearReport
+// export const jumpToAds = MyComponent.handleAdClickandReport
+// export const apperLog = MyComponent.onAppearReport
 
 export const isHarmonyOS = () => {
   const userAgent = navigator.userAgent.toLowerCase();

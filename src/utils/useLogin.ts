@@ -1,6 +1,7 @@
 import { ref } from "vue";
 // import { checkLogin, login } from "@/utils/wkbPro";
-import wkbPro from "@wifikey/wkb-pro";
+// import wkbPro from "@wifikey/wkb-pro";
+
 export function checkLogin() {
   return wkbPro.call({
     moudle: wkbPro.MoudleType.user,
@@ -90,7 +91,7 @@ export function useLogin() {
         });
     });
   }
-  
+
   function goToLogin(val: any = {}) {
     return new Promise((resolve, reject) => {
       login({

@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { ref, nextTick, computed } from 'vue';
 import dayjs from 'dayjs';
 import { Message, RecommendInfo } from '@/types/messages';
-import { checkLogin, useLogin } from '@/utils/useLogin';
 import { extractErrorInfo, decoratorFetch, parseContent, getConfig, throttle, generateUniqueId, parseAdsText, isHarmonyOS, shouldForceLogin } from '@/utils/helper';
 import { getPushHideContent, getPushContent, safeAssembleTemplate } from '@/utils/pushhelpers.js';
 import {
@@ -12,25 +11,18 @@ import {
   getAIDeepSeekMessageOnlineInfos,
   getAIDeepSeekMessages,
 } from '@/api/tutuApiWiFi/index.api';
-import { version } from '@/utils/version';
 import { recommendList } from '@/utils/constants';
-import { tracker as originTracker } from '@/utils/tracker';
 import { showToast } from 'vant';
 import { getUrlParams } from '@/utils/getParams.js';
 
 const welComeText =
-  '### Hi～我是DeepSeek\n\n你身边的智能助手，可以为你答疑解惑、尽情创作，快来点击以下任一功能体验吧～';
+  '### Hi～我是小墨\n\n你身边的智能助手，可以为你答疑解惑、尽情创作，快来点击以下任一功能体验吧～';
 
 const pushKey = getUrlParams('pushkey') || '';
-const pushHidekey = getUrlParams('pushhidekey') || '';
-const pushContent = getPushContent(pushKey) || getUrlParams('push');
-const pushHideContent = getPushHideContent(pushHidekey) || getUrlParams('pushhide');
 const pushenableR1 = getUrlParams('r1') || '';
 const pushenableOnline = getUrlParams('online') || '';
 const scene = getUrlParams('scene') || '';
 const promptFromUrl = getUrlParams('prompt') || '';
-let fromPush = location.href.indexOf('push') !== -1 || promptFromUrl // fromPush的含义变为自动发一条消息。 这个可以修改为false 。 修改为false标识已经发过。
-const isFromPush = () => location.href.indexOf('push') !== -1 || promptFromUrl; // 这个不会变
 
 const enableAds = getUrlParams('ads') || false;
 
@@ -45,7 +37,7 @@ const uuid = generateUniqueId()
 
 const getLinkMapFromMsgId = (msgId, content, sessionId) => {
   if (!linkMap[msgId]) {
-    return decoratedGetAIDeepSeekMessageOnlineInfos({ 
+    return decoratedGetAIDeepSeekMessageOnlineInfos({
       msgId,
       sessionId,
      })
@@ -118,19 +110,7 @@ export const useChatStore = defineStore('chat', () => {
       tabSource.value = source
   };
 
-  const tracker = (name, params?) => {
-    let mode = getModeValue()
-    const source = getUrlParams('source');
-    
-    const pushContent = isFromPush() ?  {
-      pushKey,
-      pushHidekey,
-    } : {};
 
-    //TODO: 有tabSouce的时候，source固定为tabSource的值
-    
-   
-  }
 
   const setPrompt = (userInput, promptInput) => {
     const weekdayMap = ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
@@ -140,7 +120,7 @@ export const useChatStore = defineStore('chat', () => {
     const userInputParsed = safeAssembleTemplate(userInput, { date, weekday, time })
     return {
       userInput: userInputParsed,
-      promptInput: safeAssembleTemplate(promptInput, 
+      promptInput: safeAssembleTemplate(promptInput,
         { date, weekday,time, userInput: userInputParsed }),
     }
   }
@@ -149,7 +129,7 @@ export const useChatStore = defineStore('chat', () => {
     const config = await getConfig();
     const sceneMap = config.scene;
     const warpMessage = sceneMap[scene] || {};
-    
+
     if (warpMessage) {
       const mode = +warpMessage.mode || 0;
       enableR1.value = mode === 1 || mode === 3;
@@ -158,7 +138,7 @@ export const useChatStore = defineStore('chat', () => {
       return {
         promptInput : promptInput,
         userInput: parsedInput
-      } 
+      }
     }
     return {};
   };
@@ -188,7 +168,7 @@ export const useChatStore = defineStore('chat', () => {
 
     const msgId = result.resMsgId;
     if (!msgId) return false;
-    
+
     removeWelcome();
     userInput.value = "";
     isTyping.value = true;
@@ -239,7 +219,7 @@ export const useChatStore = defineStore('chat', () => {
       } else {
         showToast('发送消息失败');
       }
-    
+
       if (sessionId.value === request.sessionId) {
         removeLastMessage();
         userInput.value = request.content;
@@ -248,52 +228,49 @@ export const useChatStore = defineStore('chat', () => {
     }
   };
 
- 
-
-  const { needLoginHk, getUserInfo, checkLoginHk, isLogin} = useLogin()
 
   let hasSkippedFirstLoginPrompt = false;
 
-  const decorateLogin = (action) => {
-    return async function (...args) {
-      const config = await getConfig();  // TODO: getConfig 
-      let canLoginSkipFirstMsg = config.canLoginSkipFirstMsg || false;
-      let isAuditPass = window?.tutu?.app?.isAuditPass;
-      let auditForceLogin = false
+  // const decorateLogin = (action) => {
+  //   return async function (...args) {
+  //     const config = await getConfig();  // TODO: getConfig
+  //     let canLoginSkipFirstMsg = config.canLoginSkipFirstMsg || false;
+  //     let isAuditPass = window?.tutu?.app?.isAuditPass;
+  //     let auditForceLogin = false
 
-      if (isAuditPass) {
-        const resultData = await isAuditPass().catch((e) => {
-          console.error(e)
-          return { data: true, mock: true}
-        })
-        auditForceLogin = !resultData?.data; //resultData.data true 审核通过， false 审核中， 审核中强制登录
-      }
-      const needLogin = shouldForceLogin(config.forceLoginScene || []) || auditForceLogin || isHarmonyOS()
+  //     if (isAuditPass) {
+  //       const resultData = await isAuditPass().catch((e) => {
+  //         console.error(e)
+  //         return { data: true, mock: true}
+  //       })
+  //       auditForceLogin = !resultData?.data; //resultData.data true 审核通过， false 审核中， 审核中强制登录
+  //     }
+  //     const needLogin = shouldForceLogin(config.forceLoginScene || []) || auditForceLogin || isHarmonyOS()
 
-      if (!hasSkippedFirstLoginPrompt && canLoginSkipFirstMsg) {
-        hasSkippedFirstLoginPrompt = true;
-        return action(...args);
-      }
-      await checkLoginHk().catch((e) => {
-        console.error(e);
-      })
-      if (!isLogin.value && needLogin) {
-        showToast('登录后，享智能助手免费服务');
-        await needLoginHk({
-          from: 'deepseek',
-          source: 'deepseek'
-        })
-      }
-      return action(...args);
-    };
-  }
-  
+  //     if (!hasSkippedFirstLoginPrompt && canLoginSkipFirstMsg) {
+  //       hasSkippedFirstLoginPrompt = true;
+  //       return action(...args);
+  //     }
+  //     // await checkLoginHk().catch((e) => {
+  //     //   console.error(e);
+  //     // })
+  //     // if (!isLogin.value && needLogin) {
+  //     //   showToast('登录后，享智能助手免费服务');
+  //     //   await needLoginHk({
+  //     //     from: 'deepseek',
+  //     //     source: 'deepseek'
+  //     //   })
+  //     }
+  //     // return action(...args);
+  //   };
+  // }
+
   /**
-   * 
+   *
    * @param userInput 用户实际看到的内容
    * @param promptInput  包裹prompt 的内容 没有的时候， input就是message
    * @param ignoreContent  boolean 埋点的时候忽略 content
-   * @returns 
+   * @returns
    */
   const sendMessageWithoutLogin = async (textInput?, promptInput?, ignoreContent?) => {
     if(!textInput) {
@@ -309,7 +286,7 @@ export const useChatStore = defineStore('chat', () => {
     canLoginSkipFirstMsg = false;
     await handleAIRequest(textInput, promptInput);
   };
-  const sendMessage = decorateLogin(sendMessageWithoutLogin)
+  const sendMessage = sendMessageWithoutLogin
   const typingSpeed = 45; // 控制打字速度 多少毫秒打印1个字;
   let typingFrame
   const startTyping = (index: number, onComplete?: () => void) => {
@@ -336,7 +313,7 @@ export const useChatStore = defineStore('chat', () => {
           typeNextChar()
           throttleScrollToBottom()
         });
-      }, typingSpeed) 
+      }, typingSpeed)
     } else if (typingIndex < (fullReasoning.value ? fullReasoning.value.length : 0) + fullText.value.length) {
       messages.value[index].displayedText += fullText.value[typingIndex - (fullReasoning.value ? fullReasoning.value.length : 0)] || '';
       messages.value[index].typingIndex = messages.value[index].typingIndex + 1;
@@ -345,7 +322,7 @@ export const useChatStore = defineStore('chat', () => {
           typeNextChar()
           throttleScrollToBottom()
         });
-      }, typingSpeed) 
+      }, typingSpeed)
     } else {
       onComplete && onComplete();
     }
@@ -388,18 +365,18 @@ export const useChatStore = defineStore('chat', () => {
   async function playMessage(msgId: number, sid: string, continueFlag?: boolean) {
     let firstResponse = true;
     let lastContent = null;
-    
+
     const fetchMessage = async (msgId: number, sid: string) => {
       if (firstResponse) {
-     
+
         firstResponse = false;
       }
-  
+
       if (sid !== sessionId.value) {
         clearTimeout(fetchTimeout!);
         return;
       }
-  
+
       try {
         const response = await fetchWithTimeout(msgId);
         handleFetchResponse(response, msgId, sid);
@@ -407,13 +384,13 @@ export const useChatStore = defineStore('chat', () => {
         handleFetchError(e);
       }
     };
-  
+
     const fetchWithTimeout = (msgId: number) => {
       return new Promise((resolve, reject) => {
         const timer = setTimeout(() => {
           reject({ code: 10001, message: '获取消息超时' });
         }, 20000);
-  
+
         const request = { msgId, shutdown: false };
         decoratedGetAIDeepSeekRefreshMessage(request)
           .then((response) => {
@@ -426,14 +403,14 @@ export const useChatStore = defineStore('chat', () => {
           });
       });
     };
-  
+
     const handleFetchResponse = async (response, msgId: number, sid: string) => {
       const { message: messageResult } = response;
       const { id, end, content, reasoning, online, code , adTasks, sender} = messageResult;
       const msgIndex = messages.value.findIndex((msg) => msg.id === id);
-  
+
       if (sid !== sessionId.value) return;
-  
+
       if (msgIndex !== -1) {
         updateMessage( {id, sender, msgIndex, content, reasoning, end, online, code, adTasks });
         enableAutoScroll.value && throttleScrollToBottom();
@@ -443,25 +420,25 @@ export const useChatStore = defineStore('chat', () => {
         fullText.value = content;
         fullReasoning.value = reasoning;
       }
-  
+
       await nextTick();
       enableAutoScroll.value && throttleScrollToBottom();
-  
+
       if (end) {
         clearTimeout(textTimout!);
         textTimout = null;
-   
+
         isTyping.value = false;
         return;
       }
-   
+
       handleFetchTimeout(msgId, sid, reasoning, content);
     };
-  
+
     const handleFetchError = (error) => {
- 
+
       stopGenerater(true);
-  
+
       messages.value.push({
         id: Math.random(),
         role: 'ai',
@@ -471,20 +448,20 @@ export const useChatStore = defineStore('chat', () => {
         online: false,
       });
     };
-  
+
     const updateMessage = ({id, sender, msgIndex, content, reasoning, end, online, code, adTasks}) => {
       if (+code === -112) {
         // 风控拦截
-    
-        messages.value[msgIndex] = { ...messages.value[msgIndex], 
+
+        messages.value[msgIndex] = { ...messages.value[msgIndex],
           typingIndex: undefined,
-          displayedText: '这个问题不是很适合回答，试试换一个问题吧。', text:  '这个问题不是很适合回答，试试换一个问题吧。', 
+          displayedText: '这个问题不是很适合回答，试试换一个问题吧。', text:  '这个问题不是很适合回答，试试换一个问题吧。',
           reasoning: '',
-          end: true, 
+          end: true,
           online: false,
           onlineList: [],};
       } else if (+code !== 0) {
-       
+
         messages.value[msgIndex] = { ...messages.value[msgIndex], displayedText: '', text: content || '服务器繁忙，请稍后再试吧。', reasoning, end, online };
       } else  {
         const { text, recommendList } = parseContent(content);
@@ -495,7 +472,7 @@ export const useChatStore = defineStore('chat', () => {
         const onComplete = () => {
           messages.value[msgIndex].end = end;
           if(end){
-         
+
             setTimeout(() => {
               messages.value[msgIndex].recommendList = recommendList;
               throttleScrollToBottom();
@@ -507,9 +484,9 @@ export const useChatStore = defineStore('chat', () => {
         messages.value[msgIndex].reasoning = `${reasoning}`;
         // messages.value[msgIndex].end = end;
         messages.value[msgIndex].online = online;
-       
+
       }
-  
+
       if (messages.value[msgIndex].online) {
         let onlineEnd = reasoning || content;
         getLinkMapFromMsgId(id, onlineEnd, sessionId.value)
@@ -523,7 +500,7 @@ export const useChatStore = defineStore('chat', () => {
           });
       }
     };
-  
+
     const handleFetchTimeout = (msgId, sid, reasoning, content) => {
       let bothContent = reasoning + content;
       if (lastContent !== bothContent) {
@@ -531,18 +508,18 @@ export const useChatStore = defineStore('chat', () => {
         clearTimeout(textTimout!);
         textTimout = null;
       }
-  
+
       fetchTimeout = setTimeout(() => {
         fetchMessage(msgId, sid);
       }, 1000);
-  
+
       if (!textTimout) {
         textTimout = setTimeout(() => {
           showToast('咨询人数过多，请耐心等待。');
         }, 20000);
       }
     };
-  
+
     fetchMessage(msgId, sid);
   }
 
@@ -561,7 +538,7 @@ export const useChatStore = defineStore('chat', () => {
     let userBreak = !shutdown;
     const request = { msgId: isTypingMsgId.value, shutdown: shutdown, break: userBreak };
     stopLoading.value = true;
-   
+
     getAIDeepSeekRefreshMessage(request)
       .then((res) => {
         stopLoading.value = false;
@@ -584,7 +561,7 @@ export const useChatStore = defineStore('chat', () => {
     clearTimeout(textTimout);
     textTimout = null;
     sessionId.value = chat.id;
-  
+
     try {
       const res = await decoratedGetAIDeepSeekMessages({ sessionId: chat.id, miniId: null });
       const historyMsg = res.messages.sort((a, b) => a.sendTick - b.sendTick);
@@ -609,18 +586,18 @@ export const useChatStore = defineStore('chat', () => {
           online: msg.online,
         };
       }).sort((a, b) => +a.id - +b.id);
-  
-      const updatedHistory = await Promise.all(historyResult.map(async (history) => {
-        if (history.online) {
-          const onlineInfos = await getLinkMapFromMsgId(history.id, true);
-          history.onlineList = onlineInfos || [];
-          history.onlineCount = onlineInfos.length || 0;
-          history.onlineEnd = true;
-        }
-        return history;
-      }));
-  
-      messages.value = updatedHistory;
+
+      // const updatedHistory = await Promise.all(historyResult.map(async (history) => {
+      //   if (history.online) {
+      //     const onlineInfos = await getLinkMapFromMsgId(history.id, true);
+      //     history.onlineList = onlineInfos || [];
+      //     history.onlineCount = onlineInfos.length || 0;
+      //     history.onlineEnd = true;
+      //   }
+      //   return history;
+      // }));
+
+      // messages.value = updatedHistory;
       if (!messages.value[messages.value.length - 1].end) {
         isTyping.value = true;
         playMessage(messages.value[messages.value.length - 1].id, sessionId.value, true);
@@ -640,7 +617,7 @@ export const useChatStore = defineStore('chat', () => {
   const openNewSession = () => {
     // TODO: LOGIN?
     userInput.value = '';
-  
+
     clearTimeout(fetchTimeout);
     clearTimeout(textTimout);
     textTimout = null;
@@ -656,7 +633,7 @@ export const useChatStore = defineStore('chat', () => {
 
   const sendRecommendMessageWithoutLogin = async (question: string) => {
     const qId = recommendList.find(item => item.question === question)?.id || null;
-  
+
     if (isTyping.value) {
       showToast('回答输出中，请稍后操作或点击停止回答');
       return;
@@ -672,41 +649,11 @@ export const useChatStore = defineStore('chat', () => {
     await handleAIRequest(question); // TODO: 这里要看下怎么整
   };
 
-  const sendRecommendMessage = decorateLogin(sendRecommendMessageWithoutLogin)
+  const sendRecommendMessage = sendRecommendMessageWithoutLogin
 
-  const handlePush = async () => {
-    enableR1.value = !!pushenableR1;
-    enableOnline.value = !!pushenableOnline;
-    let input = '';
-    let message = ''
-    if(!fromPush) {
-      return;
-    }
-    // console.log('fromPush=====>', pushContent);
-    if (scene && fromPush) {
-      // 只需要第一次fromPush 能发送就可以，之后都不用了
-      const sceneRes = await getSceneInput(scene, promptFromUrl);
-        message = sceneRes.userInput;
-        input = sceneRes.promptInput;
-     
-      userInput.value = sceneRes.userInput;
-    } else if (!scene && fromPush) {
-      message  =
-        pushContent ||
-        '请用紫薇斗数技巧逐步分析八字，分析我的一生运势，涵盖事业、婚姻、健康方面的关键时间节点、事件等，尽量简洁概括。并着重分析大运时机，能赚多少钱。简介2025年运势和注意事项。';
-        userInput.value  = message; //  TODO: 看看是否可以省略
-      // messages.value.push({ role: 'user', text: message  });
-      if (!pushContent) {
-        input += `\n注意，最后在末尾加一句“----\n可以告诉我你的具体出生日期，我来为你精准测算。”`;
-      } else if (pushHideContent) {
-        input += `\n===${pushHideContent}===`;
-      }
-    }
-    await sendMessage(message, input, true);
-    fromPush = false;
-  };
 
- 
+
+
   return {
     messages,
     enableR1,
@@ -727,12 +674,9 @@ export const useChatStore = defineStore('chat', () => {
     selectChat,
     openNewSession,
     sendRecommendMessage,
-    tracker,
     checkScroll,
     scrollToBottom,
     stopGenerater,
-    handlePush,
-    isLogin,
     modifyTrackerSource,
     // handleLogin
     // sentCount

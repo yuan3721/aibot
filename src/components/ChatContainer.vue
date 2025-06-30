@@ -9,7 +9,7 @@
               <LinkSheet v-if="msg.online" :msg="msg" @triggerOnlineShow="triggerOnlineShow" />
               <ThinkCollaspe :msg="msg" />
               <VueShowdown :markdown="msg.typingIndex === undefined ? msg.text : msg.displayedText" :msg="msg"
-                flavor="github" :extensions="[referenceExtension, adsExtension, hideExtension]" :options="{ emoji: true }"
+                flavor="github" :extensions="[referenceExtension, hideExtension]" :options="{ emoji: true }"
                 @triggerOnlineShow="triggerOnlineShow" />
             </template>
             <div v-else>
@@ -51,9 +51,9 @@ const VueShowdown = defineAsyncComponent(() =>
 
 const store = useChatStore();
 
-const { messages, sessionId } = storeToRefs(store);
+const { messages } = storeToRefs(store);
 
-const { checkScroll, tracker } = store;
+const { checkScroll } = store;
 
 const referenceExtension = () => {
   return [{
@@ -72,43 +72,10 @@ const referenceExtension = () => {
   }]
 }
 
-const adsExtension = () => {
-  return [{
-      type: 'lang',
-      regex: /\[ads:([^:]+?):(.*?)\]/g,
-      replace: (match) => {
-        const regex = /\[ads:([^:]+?):(.*?)\]/g;
-        let result = regex.exec(match)
-        const content = result[1]
-        const id = `${result[1]}_${result[2]}`;
-        const cacheData = JSON.stringify(cachedAdsMap[id]) ;
-        if(cachedAdsMap[id]) { 
-          if(!showTriggerMap[id]){
-            let parsedData
-            try{
-              parsedData = JSON.parse(decodeURIComponent(cachedAdsMap[id]));
-            } catch(e) {
-              console.error('parseError')
-              console.error(e)
-            }
-            showTriggerMap[id] = true;
-            apperLog(parsedData);
-            const adsExtContent = getAdsExtContent({
-              aderData: parsedData,
-              keyword: content
-            })
-
-          }
-          return `<span id=${id} class="ads-content ads-loaded" data-ads=${cacheData} >${content}</span>`
-        }
-        return `<span id=${id} class="ads-content">${content}</span>`
-      }
-    }]
-}
 
 const hideExtension = () =>  [{
   type: 'lang',
-  regex: /\[(ad[^\]]*)/g, 
+  regex: /\[(ad[^\]]*)/g,
   replace: (match) => {
     console.log('hideAExtension=====>111', match)
     return ''; // 直接替换为空，不显示
@@ -146,34 +113,7 @@ onMounted(() => {
 
   });
 
-  document.addEventListener("click", (event) => {
-    // 获取点击ads-content 的data-ads 内容 ，然后触发 jump方法
-    const adsEl = event.target.closest(".ads-content");
-    if (!adsEl) return;
-    const keyword = adsEl?.innerText;
-    // console.log('adsEl====>', keyword)
-    
-    const adsData = adsEl.getAttribute("data-ads");
-    if (!adsData) return;
-    try {
-      let parsedData = JSON.parse(decodeURIComponent(adsData));
-      jumpToAds(parsedData);
-      let extContent = getAdsExtContent({
-        aderData: parsedData,
-        keyword: keyword
-  
-      });
-      const messageContent = adsEl.closest(".message-content-ai");
-      if (!messageContent) return;
-      const dataMsgId = messageContent.getAttribute("data-msg");
-      // console.log('tracker=====>extContent', extContent)
- 
-      // console.log('adsData=====>parsedData', parsedData)
-    } catch (e) {
-      console.error('adsData=====>', adsData)
-      console.error('Error parsing adsData:', e);
-    }
-  });
+
 })
 
 </script>
