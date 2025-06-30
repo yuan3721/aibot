@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
-import { getAIConfigGetFrontCommon } from '@/api/tutuApiWiFi/index.api';
-import { defaultConfig } from '@/utils/constants';
+// import { getAIConfigGetFrontCommon } from '@/api/tutuApiWiFi/index.api';
+// import { defaultConfig } from '@/utils/constants';
 // import MyComponent from '@ads-platform/ad-h5-sdk';
 import { getAppType } from './apptype';
 
@@ -122,24 +122,10 @@ export function decoratorFetch(fn: Function, retries: number = 3, delay: number 
     }
   }
 
-  let cachedConfig = null;
   export  const getConfig = async ()  => {
     // 如果缓存中已有配置，直接返回
-    if (cachedConfig !== null) {
-      return cachedConfig;
-    }
-
-    try {
-      // 如果没有缓存配置，则发送请求获取配置
-      const res = await getAIConfigGetFrontCommon()
-      cachedConfig = JSON.parse(res.config)
-      console.log('res=====>config', cachedConfig)
-
-      return cachedConfig
-    } catch (error) {
-      console.error('Error fetching config:', error);
-      cachedConfig = defaultConfig
-      return cachedConfig
+    return {
+      commonPrompt: '"你是一个精通各种问题，并且总能以最契合用户的方式进行回复的百晓生。\n\n现在是${date}${weekday}。\n\n现在，你需要根据用户的特征，与用户完成后续对话。你每次的回复要符合以下要求：\n1. 输出不能超过600字。\n2. 在每次回复的最后，都要以Markdown的分割线格式（四条短横线-）加上一级标题的格式添加对话引导，诱导用户继续对话（必须有分割线以及以及标题格式，禁止输出对话引导之外的内容！！！）。格式如下：\n    1. \\n\\n----\\n\\n# 一句具体的对话引导\n    2. 对话引导要委婉、口语化，就像两个人对话一样，你要让用户容易明白可以发什么内容；但是不能直接写用户问题，或出现任何类似“你可以这样问”的描述。例如，“可以告诉我你的具体出生日期，我来为你精准测算。”\n    3. 当完成对话引导之后，继续输出2条推荐互动，你必须站在用户的视角，推测他在看到回复后，最可能、最感兴趣追问的问题；或是针对对话引导问题的可能回复。内容必须以有序列表的格式跟在“【<推荐互动>】”之后，格式如下：\n    1. \\n\\n【<推荐互动>】\\n\\n1. 一句话的推荐互动1\\n\\n2. 一句话的推荐互动2\n\n你需要处理的第一个问题是：${userInput}。"',
     }
   }
 

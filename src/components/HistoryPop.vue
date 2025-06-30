@@ -1,9 +1,9 @@
 <template>
-  <p>DeepSeek</p>
-  <div 
-    v-if="showDel" 
-    ref="popover" 
-    class="history-del-popover" 
+  <p></p>
+  <div
+    v-if="showDel"
+    ref="popover"
+    class="history-del-popover"
     :style="{ top: position.y + 'px', left: position.x + 'px' }"
     @click.stop
     @click="confirmDelete"
@@ -22,7 +22,7 @@
         <van-cell v-for="chatItem in chatGroups[chatGroupTag]" :key="chatItem.id" class="chat-list__item"
           :title="chatItem.title" :class="{ active: chatItem.id === sessionId }"
           @touchstart="(e) => handleTouchStart(e, chatItem)" @touchend="handleTouchEnd"
-      
+
           @click="handleCellClick(chatItem)">
         </van-cell>
       </van-cell-group>
@@ -30,7 +30,7 @@
     <div v-else class="empty-history-hint">
       <div class="empty-history-hint__title">暂无对话</div>
       <div class="empty-history-hint__desc">
-        你与 DeepSeek 的对话
+        你与 智能体 的对话
         <br />
         将展示在这里
       </div>
@@ -38,24 +38,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+
 import { ref, onMounted, onUnmounted} from 'vue';
 import { useChatStore } from '@/store/chatStore';
 import SvgIcon from '@/components/SvgIcon.vue';
 import { storeToRefs } from 'pinia';
 import { showConfirmDialog } from 'vant';
 import 'vant/lib/dialog/style';
-import { getAIDeepSeekDelSession } from '@/api/tutuApiWiFi/index.api';
+import { getAIDeepSeekDelSession } from '@/api/index';
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(isSameOrBefore);
-dayjs.extend(isSameOrAfter);
-dayjs.tz.setDefault('Asia/Shanghai');
 const props = defineProps({
   show: Boolean,
   chatGroups: Object,
@@ -89,7 +80,7 @@ const handleTouchStart = (e, chatItem: any) => {
       const touch = e.touches[0];
       // 当元素祖先的 transform 属性非 none 时，定位容器由视口改为该祖先。故此处减去13%，获取蒙层实际宽度
       const originWidth = document.body.clientWidth * 0.13;
-      let left = touch.clientX 
+      let left = touch.clientX
       console.log('left====>', left,  document.body.clientWidth)
       if(left + 200 > document.body.clientWidth) {
         left = left - originWidth - 120

@@ -1,14 +1,14 @@
 <template>
   <!-- 输入框 -->
-  
+
   <van-cell-group class="input-container">
     <slot></slot>
     <div class="input-wrapper">
-<van-field ref="userInputRef"  id="usercontent"  v-model="userInput"  class="user-input" rows="1" autosize  enterkeyhint="return" type="textarea"   
+<van-field ref="userInputRef"  id="usercontent"  v-model="userInput"  class="user-input" rows="1" autosize  enterkeyhint="return" type="textarea"
     v-on:focus="focusScroll" v-on:blur="inputBlur" />
      <label for="usercontent" v-show="!userInput.length">{{ placeholder }}</label>
     </div>
-    
+
     <div class="user-operation">
       <div class="extra-btns">
         <div class="seach-button" :class="{ enable: enableR1 }" :style="{ color: enableR1 ? '#0285F0' : '#333' }"
@@ -64,7 +64,7 @@ const placeholder = computed(() => {
   } else if(enableOnline.value) {
     return '实时检索全网最新动态'
   } else {
-    return '和DeepSeek说点什么'
+    return '和我说点什么'
   }
 })
 

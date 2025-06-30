@@ -2,7 +2,7 @@
   <div class="chat-container">
     <!-- 导航栏 -->
     <van-nav-bar :title="chatTitle" :style="{marginTop: top + 'px'}">
-    
+
       <template #left>
         <SvgIcon name="back" color="#000000" width="22px" height="22px" />
       </template>
@@ -45,7 +45,7 @@ import SvgIcon from '@/components/SvgIcon.vue';
 import ChatContainer from '@/components/ChatContainer.vue';
 import InputContainer from '@/components/InputContainer.vue';
 import HistoryPop from '@/components/HistoryPop.vue';
-import { getAIDeepSeekSessions } from '@/api/tutuApiWiFi/index.api';
+import { getAIDeepSeekSessions } from '@/api/index.ts';
 import 'vant/lib/toast/style';
 import 'vant/lib/toast/style';
 import 'vant/lib/button/style';
@@ -59,10 +59,10 @@ import { showToast } from 'vant'
 const store = useChatStore();
 const showAds = ref(false);
 const { enableAutoScroll, progress, messages, sessionId } = storeToRefs(store);
-const { 
-  openNewSession, 
-  tracker, 
-  scrollToBottom, 
+const {
+  openNewSession,
+  tracker,
+  scrollToBottom,
 } = store;
 
 const showRight = ref(false);
@@ -136,17 +136,17 @@ onMounted(async () => {
 
 
 
-  
+
   window.addEventListener("touchmove", () => {
     enableAutoScroll.value = false;
   });
 
-  
 
 
 
 
-  
+
+
   const onRequestSuccess = (data) => {
       const parsedData = JSON.parse(data.data);
       if (+parsedData.code === 1) {
@@ -164,7 +164,7 @@ onMounted(async () => {
     }
 
 
-  
+
   let appearTime = 0;
 
 

@@ -3,14 +3,14 @@ import { ref, nextTick, computed } from 'vue';
 import dayjs from 'dayjs';
 import { Message, RecommendInfo } from '@/types/messages';
 import { extractErrorInfo, decoratorFetch, parseContent, getConfig, throttle, generateUniqueId, parseAdsText, isHarmonyOS, shouldForceLogin } from '@/utils/helper';
-import { getPushHideContent, getPushContent, safeAssembleTemplate } from '@/utils/pushhelpers.js';
+import { safeAssembleTemplate } from '@/utils/pushhelpers.js';
 import {
   getAIDeepSeekSendMessage,
   getAIDeepSeekRefreshMessage,
   getAIDeepSeekNewSession,
   getAIDeepSeekMessageOnlineInfos,
   getAIDeepSeekMessages,
-} from '@/api/tutuApiWiFi/index.api';
+} from '@/api/index.ts';
 import { recommendList } from '@/utils/constants';
 import { showToast } from 'vant';
 import { getUrlParams } from '@/utils/getParams.js';
@@ -110,8 +110,6 @@ export const useChatStore = defineStore('chat', () => {
       tabSource.value = source
   };
 
-
-
   const setPrompt = (userInput, promptInput) => {
     const weekdayMap = ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
     const date = dayjs().format('YYYY年M月D日');
@@ -124,24 +122,6 @@ export const useChatStore = defineStore('chat', () => {
         { date, weekday,time, userInput: userInputParsed }),
     }
   }
-
-  const getSceneInput = async (scene, inputFromUrl?) => {
-    const config = await getConfig();
-    const sceneMap = config.scene;
-    const warpMessage = sceneMap[scene] || {};
-
-    if (warpMessage) {
-      const mode = +warpMessage.mode || 0;
-      enableR1.value = mode === 1 || mode === 3;
-      enableOnline.value = mode === 2 || mode === 3;
-      const { userInput: parsedInput, promptInput } = setPrompt(inputFromUrl || warpMessage.userInput, warpMessage.firstPrompt);
-      return {
-        promptInput : promptInput,
-        userInput: parsedInput
-      }
-    }
-    return {};
-  };
 
   const handleAIRequest = async (content: string, withPrompt?: string) => {
     let depth = enableR1.value;
@@ -192,8 +172,7 @@ export const useChatStore = defineStore('chat', () => {
   };
 
   const getPromptContent = async (content) => {
-    const config = await getConfig();
-    const commonPrompt = config.commonPrompt;
+    const commonPrompt = getConfig().commonPrompt || {};
     const promptContent = commonPrompt[getModeValue()] || {};
     const prompt = promptContent.firstPrompt || '';
     return setPrompt(content, prompt);
@@ -587,17 +566,6 @@ export const useChatStore = defineStore('chat', () => {
         };
       }).sort((a, b) => +a.id - +b.id);
 
-      // const updatedHistory = await Promise.all(historyResult.map(async (history) => {
-      //   if (history.online) {
-      //     const onlineInfos = await getLinkMapFromMsgId(history.id, true);
-      //     history.onlineList = onlineInfos || [];
-      //     history.onlineCount = onlineInfos.length || 0;
-      //     history.onlineEnd = true;
-      //   }
-      //   return history;
-      // }));
-
-      // messages.value = updatedHistory;
       if (!messages.value[messages.value.length - 1].end) {
         isTyping.value = true;
         playMessage(messages.value[messages.value.length - 1].id, sessionId.value, true);
@@ -615,7 +583,6 @@ export const useChatStore = defineStore('chat', () => {
   });
 
   const openNewSession = () => {
-    // TODO: LOGIN?
     userInput.value = '';
 
     clearTimeout(fetchTimeout);
@@ -678,7 +645,5 @@ export const useChatStore = defineStore('chat', () => {
     scrollToBottom,
     stopGenerater,
     modifyTrackerSource,
-    // handleLogin
-    // sentCount
   };
 });

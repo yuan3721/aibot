@@ -43,7 +43,6 @@ import RandomRecommend from './RandomRecommend.vue';
 import { doCopy } from '@/utils/doCopy'
 import { defineAsyncComponent } from 'vue';
 import SvgIcon from '@/components/SvgIcon.vue';
-import { jumpToAds, apperLog, getAdsExtContent ,cachedAdsMap, showTriggerMap} from '@/utils/helper';
 const VueShowdown = defineAsyncComponent(() =>
   import('vue-showdown').then((module) => module.VueShowdown)
 );
