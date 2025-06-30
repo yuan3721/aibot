@@ -6,7 +6,6 @@ import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import { readFileSync } from 'fs';
-// ARMS 插件 https://fe.lianwifi.com/docs/doc-center/start/vite-plugin.html#%E6%8F%92%E4%BB%B6%E7%94%A8%E6%B3%95
 import path from 'path';
 
 // 公共路径
@@ -46,8 +45,8 @@ const config = ({ command, mode }) => {
     presets: [
       '@vue/cli-plugin-babel/preset',
       {
-        targets: '> 0.25%, not dead',  
-        modules: 'commonjs',  
+        targets: '> 0.25%, not dead',
+        modules: 'commonjs',
       },
     ],
     plugins: [

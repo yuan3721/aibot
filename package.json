@@ -1,5 +1,5 @@
 {
-  "name": "wifi-bot",
+  "name": "ai-bot",
   "version": "1.0.27",
   "author": "yuanjw",
   "private": true,
@@ -9,15 +9,11 @@
     "mock": "vite --mode mock",
     "build": " vite build && node ./plugins/tryCatchModify.cjs",
     "build:testing": "vite build --mode testing && node ./plugins/tryCatchModify.cjs",
-    "deploy": "npm run build && echo Y | ftp-deploy set -u uat.lianwifi.com",
     "serve": "vite preview",
-    "deploy:uat": "npm run build:testing && ftp-deploy set -u uat.lianwifi.com",
     "report": "rm -rf dist && cross-env vite build",
-    "api2ts-bot": "rm -rf ./.tutuapi2ts/ && git clone -b develop git@code.wifi.com:fe-app/tutuapi2ts.git .tutuapi2ts && python ./.tutuapi2ts/update-api.py --api_branch=pre --yml=config-ai --out_dir=api/tutuApiWiFi",
     "postbuild": "mkdir -p sourcemap && find dist -name \"*.js.map\" -exec mv {} sourcemap/ \\;"
   },
   "dependencies": {
-   
     "@types/node": "^20.11.30",
     "@vitejs/plugin-legacy": "^5.3.2",
     "@vitejs/plugin-vue": "^5.0.4",

@@ -1,24 +1,5 @@
 import dayjs from "dayjs";
-// import { getAIConfigGetFrontCommon } from '@/api/tutuApiWiFi/index.api';
-// import { defaultConfig } from '@/utils/constants';
-// import MyComponent from '@ads-platform/ad-h5-sdk';
 import { getAppType } from './apptype';
-
-export const getUrlEnv = () => {
-  if (location.host === 'static.ttwifi.net') {
-    return 'prod'
-  }
-
-  if (location.host === 'uat.lianwifi.com') {
-    return 'pre'
-  }
-
-  if (location.host.startsWith('localhost') || location.host.startsWith('127.0.0.1')) {
-    return 'local';
-  }
-
-  return  'prod'
-}
 
 export const extractErrorInfo = (str) => {
     if (!str) return null;
@@ -28,7 +9,6 @@ export const extractErrorInfo = (str) => {
       const message = match[2];    // 提取的错误信息
       return { code: errorCode || 0, message: message || '服务异常，请稍后再试' };
     } else {
-      console.log("匹配失败");
       return { code: 0, message: str }
     }
   }
