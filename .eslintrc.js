@@ -3,7 +3,7 @@ module.exports = {
   env: {
     node: true,
   },
-  extends: ['plugin:vue/essential', 'wifi-vue'],
+  extends: ['plugin:vue/essential'],
   plugins: [
     "vue"
   ],

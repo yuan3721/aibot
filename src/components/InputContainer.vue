@@ -11,15 +11,25 @@
 
     <div class="user-operation">
       <div class="extra-btns">
-        <div class="seach-button" :class="{ enable: enableR1 }" :style="{ color: enableR1 ? '#0285F0' : '#333' }"
+        <div class="seach-button" :class="{ enable: enableR1 }"
+          :style="{
+            color: enableR1 ? '#6366f1' : '#475569',
+            background: enableR1 ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)' : 'rgba(248, 250, 252, 0.9)',
+            borderColor: enableR1 ? '#6366f1' : 'rgba(203, 213, 225, 0.8)'
+          }"
           type="primary" plain round @click="selectR1">
-          <SvgIcon name="r12" :color="enableR1 ? '#0285F0' : '#333'" style="margin-right: 6px;" />
+          <SvgIcon name="r12" :color="enableR1 ? '#6366f1' : '#475569'" style="margin-right: 6px;" />
           深度思考（R1）
         </div>
 
-        <div class="seach-button" :class="{ enable: enableOnline }" :style="{ color: enableOnline ? '#0285F0' : '#333' }"
+        <div class="seach-button" :class="{ enable: enableOnline }"
+          :style="{
+            color: enableOnline ? '#6366f1' : '#475569',
+            background: enableOnline ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)' : 'rgba(248, 250, 252, 0.9)',
+            borderColor: enableOnline ? '#6366f1' : 'rgba(203, 213, 225, 0.8)'
+          }"
           type="primary" plain round @click="selectOnline">
-          <SvgIcon name="link" :color="enableOnline ? '#0285F0' : '#333'" style="margin-right: 6px;" />
+          <SvgIcon name="link" :color="enableOnline ? '#6366f1' : '#475569'" style="margin-right: 6px;" />
           联网搜索
         </div>
 
@@ -112,26 +122,27 @@ onMounted(() => {
 }
 
 .input-container {
-  background-color: white;
-  // height: 108px;
-  border-radius: 14px 14px 0 0;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(226, 232, 240, 0.95) 100%);
+  backdrop-filter: blur(20px);
+  border-radius: 20px 20px 0 0;
   padding: 14px 18px 20px;
-  // position: fixed;
-  // bottom: 0;
-  box-shadow: 0px -10px 40px 0px #e5eaf4;
-  color: #888888;
+  box-shadow: 0px -10px 40px rgba(0, 0, 0, 0.1);
+  color: #64748b;
   width: 100%;
   box-sizing: border-box;
+  border: 1px solid rgba(203, 213, 225, 0.6);
+  border-bottom: none;
 
   .input-wrapper{
     position: relative;
     label {
       position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #aaa;
-  pointer-events: none;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      pointer-events: none;
+      font-size: 15px;
     }
   }
 
@@ -158,17 +169,25 @@ onMounted(() => {
   }
 
   .user-input {
-    background-color: #fff;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(203, 213, 225, 0.8);
+    border-radius: 12px;
     font-size: 15px;
     max-height: 66px;
     line-height: 22px;
-    color: #333333;
-    padding: 0;
+    color: #1e293b;
+    padding: 12px;
     overflow-y: auto;
-    border: none !important;
-    box-shadow: none !important;
+    transition: all 0.3s ease;
+
+    &:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
     &::placeholder {
-      color: #888888 !important;
+      color: #64748b !important;
     }
 
     &::after {
@@ -176,11 +195,12 @@ onMounted(() => {
     }
 
     .van-field__value {
-      // padding-top: 10px;
+      padding: 0;
+      color: #1e293b;
     }
 
     .van-field__control::placeholder {
-      // padding-top: 10px;
+      color: #64748b;
     }
   }
 
@@ -196,12 +216,18 @@ onMounted(() => {
   }
 
   .van-button {
-    border: none;
+    border: 1px solid rgba(203, 213, 225, 0.8);
     border-radius: 1000px;
-    // border: 1px solid rgba(0, 0, 0, 0.05);
-    background: #fff;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
     height: 30px;
-    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(248, 250, 252, 0.95);
+      border-color: #6366f1;
+    }
 
     &.send-btn {
       width: 30px;
@@ -210,19 +236,84 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0285f0;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      border: none;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
 
       svg {
         margin-right: 0;
       }
 
       &.disabled {
-        background: #9dc0fa;
+        background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      &:hover:not(.disabled) {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
       }
     }
 
+    &.van-enable {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+      border-color: #6366f1;
+      color: #6366f1;
+    }
+  }
+
+  .seach-button {
+    display: flex;
+    padding: 8px 16px;
+    align-items: center;
+    border-radius: 20px;
+    border: 1px solid rgba(71, 85, 105, 0.5);
+    background: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(15px);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    color: #e2e8f0;
+    font-family: 'PingFang SC';
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px;
+    margin-right: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    &:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: #6366f1;
+      box-shadow: 0px 6px 25px rgba(99, 102, 241, 0.4);
+      transform: translateY(-2px);
+
+      &::before {
+        left: 100%;
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0px 2px 10px rgba(99, 102, 241, 0.3);
+    }
+
     &.enable {
-      background: #dff1ff;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%);
+      border-color: #6366f1;
+      color: #a5b4fc;
+      box-shadow: 0px 4px 20px rgba(99, 102, 241, 0.3);
     }
   }
 }

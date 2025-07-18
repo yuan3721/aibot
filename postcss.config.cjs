@@ -1,6 +1,6 @@
 module.exports = {
   plugins: {
-    'postcss-px-to-viewport': {
+    'postcss-px-to-viewport-8-plugin': {
       // 要转化的单位
       unitToConvert: 'px',
       // UI设计稿的大小
@@ -26,7 +26,9 @@ module.exports = {
       // 包含那些文件或者特定文件
       include: [],
       // 是否处理横屏情况
+      landscape: true,
+      landscapeUnit: 'vh'
     },
-    
+
   },
 };

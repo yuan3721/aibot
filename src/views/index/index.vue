@@ -4,12 +4,12 @@
     <van-nav-bar :title="chatTitle" :style="{marginTop: top + 'px'}">
 
       <template #left>
-        <SvgIcon name="back" color="#000000" width="22px" height="22px" />
+        <SvgIcon name="back" color="#1e293b" width="22px" height="22px" />
       </template>
       <template #right>
-        <SvgIcon style="margin-right: 10px" name="newDialog" color="#000000" width="32px" height="32px"
+        <SvgIcon style="margin-right: 10px" name="newDialog" color="#1e293b" width="32px" height="32px"
           @click="openNewSession" />
-        <!-- <SvgIcon v-if="!isBottomBar" name="menu2" color="#000000" width="32px" height="32px" @click="showPopup" /> -->
+        <!-- <SvgIcon v-if="!isBottomBar" name="menu2" color="#1e293b" width="32px" height="32px" @click="showPopup" /> -->
       </template>
     </van-nav-bar>
     <!-- 聊天对话 -->
@@ -233,17 +233,41 @@ const getHistory = async () => {
 </script>
 
 <style lang="scss">
+:root {
+  --van-field-input-text-color: #1e293b;
+  --van-cell-background-color: transparent;
+  --van-popup-background-color: rgba(148, 163, 184, 0.95);
+  --van-nav-bar-background-color: transparent;
+  --van-action-sheet-background-color: rgba(148, 163, 184, 0.95);
+
+  /* 更浅的科技感配色方案 */
+  --primary-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+  --secondary-bg: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #94a3b8 100%);
+  --card-bg: rgba(248, 250, 252, 0.9);
+  --card-border: rgba(203, 213, 225, 0.6);
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  --accent-color: #6366f1;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --hover-glow: rgba(99, 102, 241, 0.3);
+  --glass-effect: backdrop-filter: blur(15px);
+}
+
 /* 进度条样式 */
 #progress-bar {
   position: absolute;
   width: 0;
   height: 4px;
-  background: #0285f0;
+  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
   transition: width 0.4s ease-in-out;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
 }
 
 .van-nav-bar {
-  background: #f4f6fa;
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #94a3b8 100%);
+  color: #1e293b;
 
   &::after {
     display: none;
@@ -251,6 +275,9 @@ const getHistory = async () => {
 
   .van-nav-bar__title {
     max-width: calc((100vw - 150px) * 0.8);
+    color: #1e293b;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.1);
   }
 
   .van-nav-bar__right {
@@ -263,7 +290,7 @@ const getHistory = async () => {
   width: 100vw;
   height: 100vh;
   overflow-x: hidden;
-  background-color: transparent;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
 }
 
 
@@ -271,7 +298,7 @@ const getHistory = async () => {
 .van-list {
   padding-top: 10px;
   padding-bottom: 60px;
-  background-color: #f4f6fa;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
   height: 100%;
   flex-grow: 0;
   overflow-y: auto;
@@ -279,7 +306,8 @@ const getHistory = async () => {
 
 .van-popup {
   .van-list {
-    background-color: #fff;
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    color: #1e293b;
   }
 
   .pop-list-container {
@@ -289,6 +317,7 @@ const getHistory = async () => {
 
   .van-cell__title {
     width: 100%;
+    color: #1e293b;
 
     span {
       text-overflow: ellipsis;
@@ -296,6 +325,7 @@ const getHistory = async () => {
       overflow: hidden;
       display: block;
       width: 100%;
+      color: #475569;
     }
   }
 }
@@ -311,8 +341,8 @@ const getHistory = async () => {
   margin: 25px 3px;
   height: 0px;
   width: calc(100% - 6px);
-  // background: #E4E6EB;
-  border-bottom: 1px dashed #e4e6e8;
+  border-bottom: 1px dashed #94a3b8;
+  box-shadow: 0 1px 3px rgba(99, 102, 241, 0.1);
 }
 
 .recommend {
@@ -330,7 +360,7 @@ const getHistory = async () => {
     line-height: 12px;
     font-size: 12px;
     font-weight: 400;
-    color: #8f939c;
+    color: #64748b;
 
     &__change {
       display: flex;
@@ -338,10 +368,11 @@ const getHistory = async () => {
 
       div {
         margin-left: 4px;
+        color: #475569;
       }
 
       &:active {
-        background: #f9f9f9;
+        background: rgba(99, 102, 241, 0.1);
       }
     }
   }
@@ -362,29 +393,33 @@ const getHistory = async () => {
   flex-direction: column;
 
   &__title {
-    color: #222;
-    font-weight: 500;
+    color: #1e293b;
+    font-weight: 600;
     font-size: 18px;
     line-height: 18px;
     margin-bottom: 16px;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.1);
   }
 
   &__desc {
     font-size: 14px;
     line-height: 20px;
-    color: #666;
+    color: #64748b;
     margin-bottom: 20px;
     text-align: center;
   }
 
   &__btn {
     border-radius: 10px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
 
-    // color: red;
     .van-button__text {
-      color: #333;
+      color: #ffffff;
       display: flex;
       align-items: center;
+      font-weight: 500;
     }
   }
 }
@@ -410,20 +445,50 @@ const getHistory = async () => {
 
 .seach-button {
   display: flex;
-  padding: 6px 14px;
+  padding: 8px 16px;
   align-items: center;
-  border-radius: 1000px;
-  border: 1px solid #dedede;
-  background: #fff;
-  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
-  color: #333;
+  border-radius: 20px;
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  background: rgba(248, 250, 252, 0.9);
+  backdrop-filter: blur(15px);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  color: #475569;
   font-family: 'PingFang SC';
-  font-size: 12px;
+  font-size: 13px;
   font-style: normal;
   font-weight: 500;
   line-height: 16px;
-  /* 133.333% */
   margin-right: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+    transition: left 0.5s;
+  }
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: #6366f1;
+    box-shadow: 0px 6px 25px rgba(99, 102, 241, 0.4);
+    transform: translateY(-2px);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0px 2px 10px rgba(99, 102, 241, 0.3);
+  }
 }
 
 .new-session__container {
@@ -442,7 +507,7 @@ const getHistory = async () => {
 .van-cell-group__title {
   padding: 0 12px;
   margin: 10px 0 6px;
-  color: #8b8b8b;
+  color: #64748b;
 }
 
 .chat-list__item {
@@ -451,19 +516,27 @@ const getHistory = async () => {
   border-radius: 10px;
   line-height: 16px;
   font-size: 14px;
-  color: #0a0a0a;
+  color: #475569;
+  background: rgba(248, 250, 252, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(203, 213, 225, 0.6);
+  transition: all 0.3s ease;
 
   &:after {
     display: none;
   }
 
-  // margin: 0 10px;
-  // padding: 12px 10px;
-  // width: calc(100% - 24px);
-  // border-radius: 10px;
+  &:hover {
+    background: rgba(248, 250, 252, 0.95);
+    border-color: #6366f1;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+  }
+
   &.active {
-    background: rgba(#0285f0, 0.1);
-    color: #0285f0;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    color: #6366f1;
+    border-color: #6366f1;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
   }
 }
 
@@ -478,7 +551,5 @@ const getHistory = async () => {
 }
 </style>
 <style>
-:root {
-  --van-field-input-text-color: #333;
-}
+
 </style>
